@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraControls : MonoBehaviour {
+    public Transform tTarget;
+
     public bool move = true;
     public Vector3 offset;
     public Transform target;
@@ -13,7 +15,7 @@ public class CameraControls : MonoBehaviour {
     Vector3 rotOffset;
 	// Use this for initialization
 	void Start () {
-        offset = Camera.main.transform.position - transform.position;
+        offset = Camera.main.transform.position - tTarget.position;
     }
 	
 	// Update is called once per frame
