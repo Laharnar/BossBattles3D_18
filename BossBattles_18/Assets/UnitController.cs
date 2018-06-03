@@ -1,8 +1,31 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
+
+public partial class UnitController:MonoBehaviour {
+
+    bool dead = false;
+    public int health = 50;
+
+    public void TryDamage(Weapon weapon) {
+        if (dead) return;
+
+        health -= weapon.baseDamage;
+        if (health <= 0) {
+            dead = true;
+            StartCoroutine(Die());
+        }
+    }
+
+    IEnumerator Die() {
+        yield return null;// wait animation to end. And/or fade out screen.
+        Destroy(transform.root.gameObject);
+    }
+}
+
 // attacking
 public partial class UnitController : MonoBehaviour {
-    public IUnitControls ctr;
+    public UnitControls ctr;
 
     int comboCounter;
 
@@ -15,6 +38,7 @@ public partial class UnitController : MonoBehaviour {
 
     IEnumerator UpdateAttacks() {
         while (true) {
+            if (dead) break;
             if (!controlsLocked) {
                 bool[] attackInput = ctr.GetInputs();
                 bool lightComboCode = attackInput[0];
@@ -79,6 +103,7 @@ public partial class UnitController : MonoBehaviour {
         tTarget.forward = d;//Camera.main.ScreenToWorldPoint(d);
         float t = Time.time + dashTime;
         while (Time.time <= t) {
+            if (dead) break;
             Dash();
             yield return null;
         }
@@ -109,6 +134,7 @@ public partial class UnitController : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        if (dead) return;
         bool dashCommand = ctr.GetInputs()[3];
 
         Vector3 raw = ctr.GetRawDirectionInput();
