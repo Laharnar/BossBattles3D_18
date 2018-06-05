@@ -6,12 +6,17 @@ using UnityEngine;
 public partial class UnitController : MonoBehaviour {
     public int alliance;
 
+    internal void SetAttacking(bool v) {
+        if (activeWeapon)
+        activeWeapon.attackPlaying = v;
+    }
 }
 
 public partial class UnitController:MonoBehaviour {
 
     internal bool dead = false;
     public int health = 50;
+    public Weapon activeWeapon;
 
     public void TryDamage(Weapon weapon) {
         if (dead) return;
@@ -47,7 +52,6 @@ public partial class UnitController : MonoBehaviour {
                 for (int i = 0; i < actions.Length && i < attackInput.Length; i++) {
                     // With toggle actions, we just activate them if we can.
                     if (actions[i].GetType() == typeof(ToggleAction)) {
-                        Debug.Log("toggly "+attackInput[i]+" "+!toggleAction);
                         (actions[i] as ToggleAction).toggleAnim.value = attackInput[i] && !toggleAction;
                         (actions[i] as ToggleAction).RunToggleAction();
                         if (!toggleAction) { // no toggles are active this frame so far
@@ -56,7 +60,6 @@ public partial class UnitController : MonoBehaviour {
                     }
                     else if (attackInput[i]) {
                         // With all others we wait until they end. Active toggle action, like blocking will be interrupted.
-                        Debug.Log("running action "+i);
                         UnitAction.activeSource = this;
                         yield return StartCoroutine(actions[i].RunAction());
                         Debug.Log("end "+i);

@@ -6,9 +6,8 @@ public class SpawnAction : UnitAction {
     public CooldownAbility attack;
 
     public override IEnumerator RunAction() {
-        activeSource.SetLock(true);
+        UnitController source = activeSource;
         GameObject.Instantiate(attack.pref, activeSource.tTarget.transform.position, new Quaternion());
         yield return new WaitForSeconds(attack.rate);
-        activeSource.SetLock(false);
     }
 }

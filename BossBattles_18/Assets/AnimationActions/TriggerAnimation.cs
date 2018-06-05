@@ -7,7 +7,6 @@ public class TriggerAnimation : AnimationEvent {
     public string triggerName;
 
     public override IEnumerator RunAnimation(Animator anim) {
-        Debug.Log("Attacking animation."+name);
         if (anim) {
             anim.SetTrigger(triggerName);
         }

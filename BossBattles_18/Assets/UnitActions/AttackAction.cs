@@ -4,8 +4,11 @@ public class AttackAction:UnitAction {
     public TriggerAnimation attack;
 
     public override IEnumerator RunAction() {
-        activeSource.SetLock(true);
-        yield return activeSource.StartCoroutine(attack.RunAnimation(activeSource.anim));
-        activeSource.SetLock(false);
+        UnitController uc = activeSource ;
+        uc.SetLock(true);
+        uc.SetAttacking(true);
+        yield return uc.StartCoroutine(attack.RunAnimation(activeSource.anim));
+        uc.SetAttacking(false);
+        uc.SetLock(false);
     }
 }

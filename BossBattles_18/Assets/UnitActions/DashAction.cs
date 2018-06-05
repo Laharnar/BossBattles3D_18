@@ -11,20 +11,20 @@ public class DashAction : UnitAction {
     public TriggerAnimation rollRight = new TriggerAnimation("RollRight", 1, "RollRight");
 
     public override IEnumerator RunAction() {
-        Debug.Log("Dash action.");
-        activeSource.SetLock(true);
-        float hraw = activeSource.hraw;
-        float vraw = activeSource.vraw;
-        Animator anim = activeSource.anim;
+        UnitController source = activeSource;
+        source.SetLock(true);
+        float hraw = source.hraw;
+        float vraw = source.vraw;
+        Animator anim = source.anim;
         if ((int)hraw == -1 || (int)vraw == 1) {
-            activeSource.StartCoroutine(rollLeft.RunAnimation(anim));
+            source.StartCoroutine(rollLeft.RunAnimation(anim));
         } else if ((int)hraw == 1 || (int)vraw == -1) {
-            activeSource.StartCoroutine(rollRight.RunAnimation(anim));
+            source.StartCoroutine(rollRight.RunAnimation(anim));
         }
 
         Vector3 d = Vector3.right * hraw + Vector3.forward * vraw;
         Vector3 camd = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * d;// Camera.main.ScreenToWorldPoint(d);
-        activeSource.tTarget.forward = camd;
+        source.tTarget.forward = camd;
         float t = Time.time + dashTime;
 
         Vector3 dashDirection;
@@ -35,11 +35,11 @@ public class DashAction : UnitAction {
         float dspeed = dashLength / dashTime;
 
         while (Time.time <= t) {
-            if (activeSource.dead) break;
-            activeSource.RigMove(dashDirection * dashLength, dspeed);//pot=hitrost*čas//rigmove
+            if (source.dead) break;
+            source.RigMove(dashDirection * dashLength, dspeed);//pot=hitrost*čas//rigmove
             yield return null;
         }
-        activeSource.SetLock(false);
+        source.SetLock(false);
         Debug.Log("Dash action end.");
     }
 
