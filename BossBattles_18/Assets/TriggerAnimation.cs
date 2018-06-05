@@ -12,11 +12,6 @@ public class TriggerAnimation : AnimationEvent {
         yield return new WaitForSeconds(animLenght);
         yield return null;
     }
-
-    public override void RunBoolAnimation(Animator anim) {
-        throw new NotImplementedException("Don't use this call");
-    }
-
     public TriggerAnimation(string attackName, float length, string triggerName):base(attackName, length) {
         this.triggerName = triggerName;
     }

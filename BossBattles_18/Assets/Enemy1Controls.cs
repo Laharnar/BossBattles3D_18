@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public partial class EnemyControls : UnitControls {
+public partial class Enemy1Controls : UnitControls {
     public Transform tTarget;
     PlayerControls player;
+
+    public CooldownAbility aoeSphere;
+
     public override Vector3 GetDirSmooth() {
         PlayerControls player = GetPlayer();
         return (player.transform.position - tTarget.position).normalized;
@@ -17,7 +21,8 @@ public partial class EnemyControls : UnitControls {
 
     public override bool[] GetInputs() {
         PlayerControls player = GetPlayer();
-        bool lightAttack = Vector3.Distance(player.transform.position, tTarget.position)<2f;
+        
+        bool lightAttack = player && Vector3.Distance(player.transform.position, tTarget.position)<2f;
         return new bool[4] { lightAttack, false, false, false };
     }
 
@@ -28,5 +33,9 @@ public partial class EnemyControls : UnitControls {
 
     public override void PostMoveUpdate() {
         //nothing
+    }
+
+    public override CooldownAbility[] GetAbilities() {
+        return new CooldownAbility[1] { aoeSphere };
     }
 }

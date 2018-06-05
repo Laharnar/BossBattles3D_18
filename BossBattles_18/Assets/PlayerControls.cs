@@ -19,6 +19,10 @@ public class PlayerControls : UnitControls {
         return new bool[4] { Input.GetKeyDown(lightAttackCode), Input.GetKeyDown(strongAttackCode), Input.GetKey(this.blockCode), Input.GetKeyDown(KeyCode.Space) };
     }
 
+    public override CooldownAbility[] GetAbilities() {
+        return new CooldownAbility[0];
+    }
+
     public override Vector3 GetRawDirectionInput() {
         return new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
     }

@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
-public abstract class AnimationEvent {
+public class AnimationEvent {
     public string name;
     public float animLenght;
 
@@ -10,7 +11,31 @@ public abstract class AnimationEvent {
         this.animLenght = length;
     }
 
-    public abstract IEnumerator RunAnimation(Animator anim);
+    public virtual IEnumerator RunAnimation(Animator anim) {
+        yield return new WaitForSeconds(animLenght);
+        yield return null;
+    }
 
-    public abstract void RunBoolAnimation(Animator anim);
+    public virtual void RunBoolAnimation(Animator anim) {
+    }
+
+}
+
+public class SpawnEvent :AnimationEvent{
+
+    public Transform pref;
+
+    public SpawnEvent(string attackName, float length, Transform pref):base(attackName, length) {
+        this.pref = pref;
+    }
+
+    public override IEnumerator RunAnimation(Animator anim) {
+        GameObject.Instantiate(pref, anim.transform.position, new Quaternion());
+        yield return new WaitForSeconds(animLenght);
+        yield return null;
+    }
+
+    public virtual void RunBoolAnimation(Animator anim) {
+
+    }
 }

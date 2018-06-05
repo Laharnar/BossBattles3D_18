@@ -1,0 +1,34 @@
+﻿4.6.2018
+Begin collecting concept art for the game.
+Basic story idea is currently, fight bosses in dreams and try to escape it.
+
+
+Fog boss. Ascends from above, from the fog, from the coulds.
+-------
+animations, quickly set up abilities
+This setup doesn't let you execute commands properly.
+
+Ai > animations . move
+
+AI
+List of abilities and moves to use
+
+move - unit control
+
+ability - ability control
+.RUN
+triggers unit animation
+optionally manually moves unit in some direction.
+spawns independednt object with collisions, damage, etc
+
+melle weapon action
+triggers animation on unit
+collision damage.
+
+ANIMATION TRIGGER - sending anim to pipeline, it will wait until animation runs out.
+collisions and damge: other script on go
+
+
+animations
+move
+-------

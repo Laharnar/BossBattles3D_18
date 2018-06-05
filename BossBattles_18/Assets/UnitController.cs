@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+public partial class UnitController : MonoBehaviour {
+    public int alliance;
+}
 
 public partial class UnitController:MonoBehaviour {
 
@@ -30,11 +35,19 @@ public partial class UnitController : MonoBehaviour {
     int comboCounter;
 
     public Animator anim;
-
     // TODO: separate into list of scriptable objects, or separate script.
     public TriggerAnimation lightAttack = new TriggerAnimation("LightCombo", 0.8f, "LightCombo");
     public TriggerAnimation strongAttack = new TriggerAnimation("StrongCombo", 1.0f, "StrongCombo");
+    public SpawnEvent aoeAttack;
     public BoolAnimation blockAction = new BoolAnimation("Blocking", 1.0f, "Blocking");
+    List<AnimationEvent> abilities = new List<AnimationEvent>();
+    void InitAttacks() {
+        if (ctr.GetAbilities().Length >= 1) {
+            aoeAttack = new SpawnEvent("AOEAttack", 0.75f, ctr.GetAbilities()[0].pref);
+            abilities.Add(aoeAttack);
+        }
+    }
+
 
     IEnumerator UpdateAttacks() {
         while (true) {
@@ -45,7 +58,7 @@ public partial class UnitController : MonoBehaviour {
                 bool strongComboCode = attackInput[1]; 
                 bool blockCode = attackInput[2];
 
-                // combos
+                // comboes
                 if (lightComboCode) {
                     controlsLocked = true;
                     yield return StartCoroutine(lightAttack.RunAnimation(anim));
@@ -57,12 +70,18 @@ public partial class UnitController : MonoBehaviour {
                     controlsLocked = false;
                 }
                 // blocking
-                if (!controlsLocked && blockCode) {
-                    blockAction.value = true;
-                } else {
-                    blockAction.value = false;
-                }
+                blockAction.value = blockCode;
                 blockAction.RunBoolAnimation(anim);
+
+                // Get inputs for different abilities and activate them.
+                CooldownAbility[] abilityInput = ctr.GetAbilities();
+                for (int i = 0; i < abilityInput.Length && i< abilities.Count; i++) {
+                    if (abilityInput[i].IsReady()) {
+                        controlsLocked = true;
+                        yield return StartCoroutine(abilities[i].RunAnimation(anim));
+                        controlsLocked = false;
+                    }
+                }
             }
             yield return null;
         }
@@ -91,6 +110,7 @@ public partial class UnitController : MonoBehaviour {
         if (anim)
             anim.SetTrigger(name);
     }
+
     private IEnumerator CinemaDash() {
         controlsLocked = true;
         if ((int)hraw == -1 || (int)vraw == 1) {
@@ -100,7 +120,8 @@ public partial class UnitController : MonoBehaviour {
         }
 
         Vector3 d = Vector3.right * hraw + Vector3.forward * vraw;
-        tTarget.forward = d;//Camera.main.ScreenToWorldPoint(d);
+        Vector3 camd = Quaternion.Euler(0, Camera.main.transform.eulerAngles.y, 0) * d;// Camera.main.ScreenToWorldPoint(d);
+        tTarget.forward = camd;
         float t = Time.time + dashTime;
         while (Time.time <= t) {
             if (dead) break;
@@ -128,6 +149,8 @@ public partial class UnitController : MonoBehaviour {
     void Start() {
         if (!rig)
             rig = GetComponent<Rigidbody>();
+
+        InitAttacks();
 
         StartCoroutine(UpdateAttacks());
     }
