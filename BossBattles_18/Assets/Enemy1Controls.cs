@@ -4,8 +4,9 @@ using UnityEngine;
 public partial class Enemy1Controls : UnitControls {
     public Transform tTarget;
     PlayerControls player;
-
-    public CooldownAbility aoeSphere;
+    
+    public AttackAction lightAttack;
+    public SpawnAction aoeAttack;
 
     public override Vector3 GetDirSmooth() {
         PlayerControls player = GetPlayer();
@@ -19,11 +20,14 @@ public partial class Enemy1Controls : UnitControls {
         return player;
     }
 
+    public override UnitAction[] GetActions() {
+        return new UnitAction[] { lightAttack, aoeAttack };
+    }
     public override bool[] GetInputs() {
         PlayerControls player = GetPlayer();
         
         bool lightAttack = player && Vector3.Distance(player.transform.position, tTarget.position)<2f;
-        return new bool[4] { lightAttack, false, false, false };
+        return new bool[] { lightAttack, aoeAttack.attack.IsReady() };
     }
 
     public override Vector3 GetRawDirectionInput() {
@@ -35,7 +39,4 @@ public partial class Enemy1Controls : UnitControls {
         //nothing
     }
 
-    public override CooldownAbility[] GetAbilities() {
-        return new CooldownAbility[1] { aoeSphere };
-    }
 }

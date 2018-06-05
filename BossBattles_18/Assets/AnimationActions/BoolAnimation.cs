@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 
+[System.Serializable]
 public class BoolAnimation : AnimationEvent {
 
     public string triggerName;

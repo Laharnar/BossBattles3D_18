@@ -28,7 +28,11 @@ collision damage.
 ANIMATION TRIGGER - sending anim to pipeline, it will wait until animation runs out.
 collisions and damge: other script on go
 
-
-animations
-move
 -------
+
+5.6.2018
+testing refactored animations and attacks.
+dash
+attack light
+attack strong
+block
