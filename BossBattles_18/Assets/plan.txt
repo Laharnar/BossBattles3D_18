@@ -37,3 +37,17 @@ dash
 attack light
 attack strong
 block
+
+So what I need now is some AI actions sequence, some way to build AI.
+- Distance based
+- Angle based
+- Zone based. (angles+distance)
+- Just general walking around.
+- Walking to player.
+
+6.6.2018
+For enemies use AiStack, and AiLogic. Player had UnitController and PlayerControls.
+A bit messy, 2 paralel systems, but it's okey. You could move Player controls into 
+AiLogic but it's not necessary.
+
+Block recieving.

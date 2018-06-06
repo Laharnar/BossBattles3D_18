@@ -10,8 +10,11 @@ public class ToggleAction : UnitAction {
         yield return null;
     }
 
-    internal void RunToggleAction() {
+    internal virtual void RunToggleAction() {
         toggleAnim.RunBoolAnimation(activeSource.anim);
 
     }
 }
+
+
+

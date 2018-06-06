@@ -14,9 +14,20 @@ public class PlayerControls : UnitControls {
     public AttackAction lightAttack;
     public AttackAction strongAttack;
     public ToggleAction blockAction; //= new BoolAnimation("Blocking", 1.0f, "Blocking");
+    internal static Transform s;
+
+    private void Awake() {
+        s = transform.root.transform;
+    }
 
     public override Vector3 GetDirSmooth() {
-        return new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        Vector3 inp = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+
+        Vector3 dirRaw = inp;
+        Vector3 camf = Camera.main.transform.forward;
+        Vector3 dirFromCam = Camera.main.transform.TransformDirection(dirRaw.normalized);
+        return dirFromCam;
+
     }
 
     // TODO: export as player only input

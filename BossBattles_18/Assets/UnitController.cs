@@ -6,26 +6,32 @@ using UnityEngine;
 public partial class UnitController : MonoBehaviour {
     public int alliance;
 
-    internal void SetAttacking(bool v) {
-        if (activeWeapon)
-        activeWeapon.attackPlaying = v;
-    }
 }
 
+// Damage and hp
 public partial class UnitController:MonoBehaviour {
 
     internal bool dead = false;
     public int health = 50;
     public Weapon activeWeapon;
+    public ToggleAction damagedAction;
 
     public void TryDamage(Weapon weapon) {
+
         if (dead) return;
+
+        StartCoroutine(Damaged());
 
         health -= weapon.baseDamage;
         if (health <= 0) {
             dead = true;
             StartCoroutine(Die());
         }
+    }
+
+    IEnumerator Damaged() {
+        anim.SetTrigger("Attacked");
+        yield return new WaitForSeconds(0.5f);
     }
 
     IEnumerator Die() {
@@ -39,6 +45,10 @@ public partial class UnitController : MonoBehaviour {
 
     public Animator anim;
 
+    internal void SetAttacking(bool v) {
+        if (activeWeapon)
+            activeWeapon.attackPlaying = v;
+    }
     IEnumerator UpdateAttacks() {
         while (true) {
             if (dead) break;
@@ -62,7 +72,6 @@ public partial class UnitController : MonoBehaviour {
                         // With all others we wait until they end. Active toggle action, like blocking will be interrupted.
                         UnitAction.activeSource = this;
                         yield return StartCoroutine(actions[i].RunAction());
-                        Debug.Log("end "+i);
                     }
                 }
             }
@@ -110,26 +119,17 @@ public partial class UnitController : MonoBehaviour {
 
         ctr.PostMoveUpdate();
     }
-
-    public void Move() {
-        Vector3 dirVector = ctr.GetDirSmooth();
-        float h = dirVector.x;
-        float v = dirVector.z;
-
-        Vector3 dirFromCam = CalcMoveDir();
-        TurnTowards(dirFromCam, v, h);
+    public void MoveCustom(float h, float v) {
+        Vector3 calcMove = new Vector3(h, 0, v);
+        TurnTowards(calcMove, v, h);
 
         // insta stop: (vraw*vraw+hraw*hraw)/2
         RigMove(Vector3.forward * (v * v + h * h) / 2, speed);
 
     }
-
-    // TODO: export as player specific calculaction
-    private Vector3 CalcMoveDir() {
-        Vector3 dirRaw = new Vector3(hraw, 0, vraw);
-        Vector3 camf = Camera.main.transform.forward;
-        Vector3 dirFromCam = Camera.main.transform.TransformDirection(dirRaw.normalized);
-        return dirFromCam;
+    public void Move() {
+        Vector3 dirVector = ctr.GetDirSmooth();
+        MoveCustom(dirVector.x, dirVector.z);
     }
 
     private void TurnTowards(Vector3 dirFromCam, float v, float h) {
